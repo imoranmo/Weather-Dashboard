@@ -5,6 +5,8 @@ var humidityTextel = document.querySelector('.Humidity');
 var uvTextel = document.querySelector('.UV');
 var cityname = document.querySelector('#City');
 var inputForm = document.querySelector('.btn');
+var cityBtn = document.querySelector('#City-buttons');
+var array =[]
 
 
 var SubmitForm =  function (event) {
@@ -28,11 +30,20 @@ var getWeather = function (city) {
         var lon = data.coord.lon;
         var date = moment(data.coord.dt).format("l");
         var img = document.createElement("img");
+        var name = data.name
         img.src = 'http://openweathermap.org/img/w/' + data.weather[0].icon + '.png';
         cityTextel.textContent = data.name + " (" + date + ")";
         cityTextel.appendChild(img);
-   console.log (data)
-       
+        console.log (data)
+
+
+        var newcity = document.createElement('button')
+        newcity.classList = 'btn col-12'
+        newcity.textContent = data.name
+        newcity.setAttribute ('city', data.name)
+        cityBtn.appendChild (newcity)
+
+
         var weatherAPi = 'https://api.openweathermap.org/data/2.5/onecall?lat=' + lat +'&lon=' + lon +'&units=imperial&appid=39b190096fa36624e1e4e84727dd3ec2'
 
         fetch(weatherAPi)
@@ -44,15 +55,38 @@ var getWeather = function (city) {
              windTextel.textContent = 'Wind:' + " " + data.current.wind_speed + " MPH";
              humidityTextel.textContent = 'Humidity:' + " " + data.current.humidity + " %";
              uvTextel.textContent = 'UV Index:' + " " + data.current.uvi;
+             var uviIndex = data.current.uvi
              console.log (data)
 
-             for (var i = 0; i < 5; i++) {
-                var text = i + 1;
-                var round = '.Date' + text;
-                var round2 = '.Temp' + text;
-                var round3 = '.Wind' + text;
-                var round4 = '.Humi' + text;
-                var time2 = moment(data.daily[i].dt).format("l");
+              if (uviIndex <=2) {
+                 uvTextel.style.background ='green';
+                 uvTextel.style.color ='white';
+              }
+
+              if (uviIndex >=3 && uviIndex <=5) {
+                uvTextel.style.background ='yellow';
+             }
+             if (uviIndex >=6 && uviIndex <=7) {
+              uvTextel.style.background ='orange';
+              uvTextel.style.color ='white';
+              } 
+
+            if (uviIndex >=8 && uviIndex <=10) {
+              uvTextel.style.background ='red';
+             uvTextel.style.color ='white';
+             } 
+
+             if (uviIndex >=11) {
+              uvTextel.style.background ='purple';
+              uvTextel.style.color ='white';
+           }
+
+             for (var i = 1; i <= 5; i++) {
+                var round = '.Date' + i;
+                var round2 = '.Temp' + i;
+                var round3 = '.Wind' + i;
+                var round4 = '.Humi' + i;
+                var time2 = moment.unix(data.daily[i].dt).format("l");
                 document.querySelector(round).textContent = time2;
                 document.querySelector(round2).textContent = 'Temp:' + " " + data.daily[i].temp.max + " °F";
                 document.querySelector(round3).textContent = 'Wind:' + " " + data.daily[i].wind_speed + " MPH";
@@ -62,12 +96,21 @@ var getWeather = function (city) {
                 img.src = 'http://openweathermap.org/img/w/' + data.daily[i].weather[0].icon + '.png';
                 document.querySelector(round).appendChild(img);
              }
-    
+
  
           });
       });
   };
 
+  var cityButtonClick = function (event) {
+     var city = event.target.getAttribute ('city')
+
+     if(city) {
+      getWeather (city)
+
+     }
+  }
   
 
   inputForm.addEventListener('click', SubmitForm )
+  cityBtn.addEventListener('click', cityButtonClick)
