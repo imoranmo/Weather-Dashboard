@@ -6,12 +6,14 @@ var uvTextel = document.querySelector('.UV');
 var cityname = document.querySelector('#City');
 var inputForm = document.querySelector('.btn');
 var cityBtn = document.querySelector('#City-buttons');
+var rightColumn = document.querySelector('.rightcol')
 var array =[]
 
 
 var SubmitForm =  function (event) {
   event.preventDefault();
    var city = cityname.value.trim();
+   rightColumn.classList = 'container rightcol visible';
  console.log (city)
    if (city) {
     getWeather(city);
@@ -34,34 +36,34 @@ var SubmitForm =  function (event) {
   localStorage.setItem("array", JSON.stringify(array));
 }
 
-function createButton (name) {
- var maincity = name
-  if (array.length === 0 ){
-    array.push(maincity);
-    var newcity = document.createElement('button');
-    newcity.classList = 'btn col-12';
-    newcity.textContent = maincity;
-    newcity.setAttribute ('city', maincity);
-    cityBtn.appendChild (newcity);
-    maincity ="";
-
-  } else if ( array.length > 0){
-    array.push(maincity);
-
+function init (){
+ 
+  rightColumn.classList = 'container rightcol invisible';
+  getArray();
+  
   for (var i = 0; i < array.length; i++) {
-    var currentCity = array[i]
-    var namecheck = Boolean (currentCity !== name)
+     var citystart = array[i]
 
-    console.log (namecheck)
-
-    if (namecheck === false)
+    if (array.includes(citystart)) {
       var newcity = document.createElement('button');
-      newcity.classList = 'btn col-12';
-      newcity.textContent = currentCity;
-      newcity.setAttribute ('city', currentCity);
+      newcity.classList = 'btn col-12 bg-dark text-white border-white';
+      newcity.textContent = citystart;
+      newcity.setAttribute ('city', citystart);
       cityBtn.appendChild (newcity);
+    }
+  }
 
- }}
+}
+
+function createButton(city) {
+  if (!array.includes(city)) {
+    var newcity = document.createElement('button');
+    newcity.classList = 'btn col-12 bg-dark text-white border-white';
+    newcity.textContent = city;
+    newcity.setAttribute ('city', city);
+    cityBtn.appendChild (newcity);
+    array.push(city);
+  }
 }
 
 var getWeather = function (city) {
@@ -82,7 +84,8 @@ var getWeather = function (city) {
         cityTextel.appendChild(img);
         console.log (data);
         
-        createButton(name)
+        createButton(name);
+        storeArray();
 
         var weatherAPi = 'https://api.openweathermap.org/data/2.5/onecall?lat=' + lat +'&lon=' + lon +'&units=imperial&appid=39b190096fa36624e1e4e84727dd3ec2'
 
@@ -143,7 +146,8 @@ var getWeather = function (city) {
   };
 
   var cityButtonClick = function (event) {
-     var city = event.target.getAttribute ('city')
+     var city = event.target.getAttribute ('city');
+     rightColumn.classList = 'container rightcol visible';
 
      if(city) {
       getWeather (city)
@@ -151,6 +155,6 @@ var getWeather = function (city) {
      }
   }
   
-
+  init()  
   inputForm.addEventListener('click', SubmitForm )
   cityBtn.addEventListener('click', cityButtonClick)
