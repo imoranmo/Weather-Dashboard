@@ -35,21 +35,33 @@ var SubmitForm =  function (event) {
 }
 
 function createButton (name) {
-  var citystring = name;
+ var maincity = name
+  if (array.length === 0 ){
+    array.push(maincity);
+    var newcity = document.createElement('button');
+    newcity.classList = 'btn col-12';
+    newcity.textContent = maincity;
+    newcity.setAttribute ('city', maincity);
+    cityBtn.appendChild (newcity);
+    maincity ="";
+
+  } else if ( array.length > 0){
+    array.push(maincity);
 
   for (var i = 0; i < array.length; i++) {
- 
-   if (array[i] != name) {
-      array.push(name);
-      var newcity = document.createElement('button')
-      newcity.classList = 'btn col-12'
-      newcity.textContent = name
-      newcity.setAttribute ('city', name)
-      cityBtn.appendChild (newcity)
-   }
+    var currentCity = array[i]
+    var namecheck = Boolean (currentCity !== name)
 
- }
+    console.log (namecheck)
 
+    if (namecheck === false)
+      var newcity = document.createElement('button');
+      newcity.classList = 'btn col-12';
+      newcity.textContent = currentCity;
+      newcity.setAttribute ('city', currentCity);
+      cityBtn.appendChild (newcity);
+
+ }}
 }
 
 var getWeather = function (city) {
