@@ -18,6 +18,40 @@ var SubmitForm =  function (event) {
 
    }
 }
+
+ function getArray() {
+
+  var storedArray = JSON.parse(localStorage.getItem("array"));
+
+  if (storedArray !== null) {
+    array = storedArray;
+  }
+
+ }
+
+ function storeArray() {
+ 
+  localStorage.setItem("array", JSON.stringify(array));
+}
+
+function createButton (name) {
+  var citystring = name;
+
+  for (var i = 0; i < array.length; i++) {
+ 
+   if (array[i] != name) {
+      array.push(name);
+      var newcity = document.createElement('button')
+      newcity.classList = 'btn col-12'
+      newcity.textContent = name
+      newcity.setAttribute ('city', name)
+      cityBtn.appendChild (newcity)
+   }
+
+ }
+
+}
+
 var getWeather = function (city) {
     var apiUrl = 'https://api.openweathermap.org/data/2.5/weather?q=' + city + '&appid=39b190096fa36624e1e4e84727dd3ec2';
   
@@ -30,19 +64,13 @@ var getWeather = function (city) {
         var lon = data.coord.lon;
         var date = moment(data.coord.dt).format("l");
         var img = document.createElement("img");
-        var name = data.name
+        var name = data.name.trim();
         img.src = 'http://openweathermap.org/img/w/' + data.weather[0].icon + '.png';
         cityTextel.textContent = data.name + " (" + date + ")";
         cityTextel.appendChild(img);
-        console.log (data)
-
-
-        var newcity = document.createElement('button')
-        newcity.classList = 'btn col-12'
-        newcity.textContent = data.name
-        newcity.setAttribute ('city', data.name)
-        cityBtn.appendChild (newcity)
-
+        console.log (data);
+        
+        createButton(name)
 
         var weatherAPi = 'https://api.openweathermap.org/data/2.5/onecall?lat=' + lat +'&lon=' + lon +'&units=imperial&appid=39b190096fa36624e1e4e84727dd3ec2'
 
